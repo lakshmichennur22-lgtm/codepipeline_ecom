@@ -230,6 +230,40 @@ resource "aws_codepipeline" "frontend_infrapipeline" {
   }
 }
 # -----------------------------
+# IAM ROLE - CODEPIPELINE
+# -----------------------------
+resource "aws_iam_role" "codepipeline_role" {
+  name = "frontend-codepipeline-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Service = "codepipeline.amazonaws.com"
+      }
+      Action = "sts:AssumeRole"
+    }]
+  })
+}
+
+# -----------------------------
+# CODESTAR CONNECTION PERMISSION (REQUIRED)
+# -----------------------------
+resource "aws_iam_role_policy" "codepipeline_codestar" {
+  role = aws_iam_role.codepipeline_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = "codestar-connections:UseConnection"
+      Resource = "arn:aws:codestar-connections:us-east-1:579201838441:connection/74b38e0b-742e-47c7-8855-212794c4842d"
+    }]
+  })
+}
+
+# -----------------------------
 # CODEPIPELINE
 # -----------------------------
 resource "aws_codepipeline" "CICD_pipeline" {
