@@ -311,7 +311,7 @@ resource "aws_codepipeline" "CICD_pipeline" {
       input_artifacts = ["build"]
 
       configuration = {
-        BucketName = "frontend-website-bucket"
+        BucketName = ""
         Extract    = "true"
       }
     }
